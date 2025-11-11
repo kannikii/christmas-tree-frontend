@@ -5,6 +5,7 @@ import treePageBg from '../assets/treePage-bg.gif'
 import treeImage from '../assets/tree.png'
 import noteImage from '../assets/note.png'
 import './TreePage.css'
+import api from '../api/axios'
 
 function TreePage({ user }) {
   const [notes, setNotes] = useState([])
@@ -37,12 +38,9 @@ function TreePage({ user }) {
 
     setIsCheckingAccess(true)
 
-    fetch(`http://localhost:3000/users/${user.id}/trees`)
-      .then((res) => {
-        if (!res.ok) throw new Error('트리 권한 확인 실패')
-        return res.json()
-      })
-      .then((list) => {
+    api
+      .get(`/users/${user.id}/trees`)
+      .then(({ data: list }) => {
         const allowed = Array.isArray(list)
           ? list.some((tree) => String(tree.tree_id) === String(treeId))
           : false
@@ -65,9 +63,7 @@ function TreePage({ user }) {
   const loadComments = useCallback(async (noteId) => {
     if (!noteId) return
     try {
-      const res = await fetch(`http://localhost:3000/notes/${noteId}/comments`)
-      if (!res.ok) throw new Error('댓글 조회 실패')
-      const data = await res.json()
+      const { data } = await api.get(`/notes/${noteId}/comments`)
       const comments = Array.isArray(data) ? data : []
       setNoteComments((prev) => ({ ...prev, [noteId]: comments }))
     } catch (error) {
@@ -80,9 +76,7 @@ function TreePage({ user }) {
 
     const fetchNotes = async () => {
       try {
-        const res = await fetch(`http://localhost:3000/trees/${treeId}/notes`)
-        if (!res.ok) throw new Error('노트 불러오기 실패')
-        const data = await res.json()
+        const { data } = await api.get(`/trees/${treeId}/notes`)
 
         if (!Array.isArray(data)) return
         setNotes(data)
@@ -100,9 +94,7 @@ function TreePage({ user }) {
         const likeEntries = await Promise.all(
           noteIds.map(async (noteId) => {
             try {
-              const countRes = await fetch(`http://localhost:3000/notes/${noteId}/likes/count`)
-              if (!countRes.ok) throw new Error('좋아요 수 조회 실패')
-              const countData = await countRes.json()
+              const { data: countData } = await api.get(`/notes/${noteId}/likes/count`)
               return [noteId, countData.likeCount ?? 0]
             } catch (error) {
               console.error(`노트 ${noteId} 좋아요 수 조회 실패:`, error)
@@ -149,19 +141,12 @@ function TreePage({ user }) {
 
     try {
       setIsSubmitting(true)
-      const res = await fetch(`http://localhost:3000/trees/${treeId}/notes`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          user_id: user.id,
-          message: newNote,
-          pos_x: clickPos.x,
-          pos_y: clickPos.y,
-        }),
+      const { data } = await api.post(`/trees/${treeId}/notes`, {
+        user_id: user.id,
+        message: newNote,
+        pos_x: clickPos.x,
+        pos_y: clickPos.y,
       })
-
-      if (!res.ok) throw new Error('노트 저장 실패')
-      const data = await res.json()
       const created = {
         note_id: data.note_id,
         message: newNote,
@@ -194,15 +179,10 @@ function TreePage({ user }) {
     const alreadyLiked = likedNotes[noteId] === true
 
     try {
-      const res = await fetch(`http://localhost:3000/notes/${noteId}/likes`, {
-        method: alreadyLiked ? 'DELETE' : 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ user_id: user.id }),
-      })
+      const { data } = alreadyLiked
+        ? await api.delete(`/notes/${noteId}/likes`, { data: { user_id: user.id } })
+        : await api.post(`/notes/${noteId}/likes`, { user_id: user.id })
 
-      if (!res.ok) throw new Error('좋아요 처리 실패')
-
-      const data = await res.json()
       const latestCount =
         typeof data.likeCount === 'number'
           ? data.likeCount
@@ -229,13 +209,10 @@ function TreePage({ user }) {
 
     try {
       setIsCommentSubmitting(true)
-      const res = await fetch(`http://localhost:3000/notes/${noteId}/comments`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ user_id: user.id, content }),
+      await api.post(`/notes/${noteId}/comments`, {
+        user_id: user.id,
+        content,
       })
-
-      if (!res.ok) throw new Error('댓글 등록 실패')
       setNewComment('')
       await loadComments(noteId)
     } catch (error) {

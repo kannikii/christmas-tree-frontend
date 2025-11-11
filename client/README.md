@@ -1,20 +1,27 @@
-# React + Vite
+# Christmas Tree Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Railway 백엔드(`https://christmas-tree-backend-production.up.railway.app`)와 통신하는 Vite 기반 React 프로젝트입니다. 모든 API 호출은 axios 인스턴스를 통해 동일한 베이스 URL과 쿠키 설정을 사용합니다.
 
-Currently, two official plugins are available:
+## 개발 방법
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+```bash
+npm install
+npm run dev    # 로컬 개발 서버
+npm run build  # 프로덕션 빌드
+```
 
-## React Compiler
+## 환경변수
 
-The React Compiler is enabled on this template. See [this documentation](https://react.dev/learn/react-compiler) for more information.
+프론트는 Vite 환경 변수 `VITE_API_URL` 값으로 백엔드 주소를 참조합니다. 배포 전 `.env` 파일을 생성하고 예시에 맞게 값을 지정하세요.
 
-Note: This will impact Vite dev & build performances.
+```bash
+cp .env.example .env
+```
 
-## Expanding the ESLint configuration
+`VITE_API_URL` 값은 Railway 백엔드 URL (예: `https://christmas-tree-backend-production.up.railway.app`) 로 맞춰야 Vercel 배포본에서도 올바르게 통신합니다.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Vercel 배포 팁
 
-lanaPixel fonts 사용
+- `vercel.json` 파일에 Vite용 빌드/출력 설정이 포함되어 있습니다.
+- Vercel 프로젝트의 환경 변수 탭에 `VITE_API_URL` 을 추가합니다.
+- Railway 백엔드의 `FRONTEND_URL` 환경 변수는 `https://christmas-tree-frontend.vercel.app` 으로 설정하고 재배포해야 CORS 에러가 발생하지 않습니다.

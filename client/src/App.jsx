@@ -8,7 +8,7 @@ import Header from "./components/Header";
 import HomePage from "./pages/HomePage";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
-import MyTreesPage from "./pages/MyTreesPage"; // ✅ 수정됨
+import MyTreesPage from "./pages/MyTreesPage"; 
 import TreePage from "./pages/TreePage";
 import OAuthSuccess from "./pages/OAuthSuccess";
 

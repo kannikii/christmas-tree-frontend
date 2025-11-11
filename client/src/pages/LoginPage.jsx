@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import '../components/PixelForm.css'
+import api from '../api/axios'
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000'
+const API_BASE_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:3000'
 
 function LoginPage({ setUser }) {
   const [email, setEmail] = useState('')
@@ -22,24 +23,19 @@ function LoginPage({ setUser }) {
     e.preventDefault()
 
     try {
-      const response = await fetch(`${API_BASE_URL}/login`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
-      })
+      const { data } = await api.post('/login', { email, password })
 
-      const data = await response.json()
-
-      if (response.ok) {
+      if (data?.user) {
         setMessage('✅ 로그인 성공!')
-        localStorage.setItem('user', JSON.stringify(data.user)) // ✅ 저장
-        setUser(data.user) // ✅ 전역 상태 업데이트
+        localStorage.setItem('user', JSON.stringify(data.user))
+        setUser(data.user)
         navigate('/') // ✅ 홈으로 이동
       } else {
-        setMessage(`❌ ${data}`)
+        setMessage('❌ 로그인 응답이 올바르지 않습니다.')
       }
     } catch (error) {
-      setMessage('서버 오류 발생')
+      const serverMessage = error.response?.data?.message || error.response?.data
+      setMessage(`❌ ${serverMessage || '서버 오류 발생'}`)
       console.error(error)
     }
   }

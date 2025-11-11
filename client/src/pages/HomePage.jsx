@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Countdown from "../components/Countdown";
 import PixelButton from "../components/PixelButton";
+import api from "../api/axios";
 
 export default function HomePage({ user }) {
   const navigate = useNavigate();
@@ -16,24 +17,27 @@ export default function HomePage({ user }) {
     }
 
     if (mode === "PUBLIC") {
-      const res = await fetch(`http://localhost:3000/users/${user.id}/trees`);
-      const trees = await res.json();
-      const publicTree = trees.find((t) => t.tree_type === "PUBLIC");
-      if (publicTree) navigate(`/tree/${publicTree.tree_id}`);
-      else alert("참여 중인 공개 트리가 없습니다.");
+      try {
+        const { data } = await api.get(`/users/${user.id}/trees`);
+        const trees = Array.isArray(data) ? data : [];
+        const publicTree = trees.find((t) => t.tree_type === "PUBLIC");
+        if (publicTree) navigate(`/tree/${publicTree.tree_id}`);
+        else alert("참여 중인 공개 트리가 없습니다.");
+      } catch (error) {
+        console.error(error);
+        alert("공개 트리 정보를 불러오지 못했습니다.");
+      }
     } else if (mode === "PRIVATE") {
       if (!privateKey.trim()) return alert("트리 키를 입력하세요.");
       try {
-        const res = await fetch(`http://localhost:3000/tree/by-key/${privateKey}`);
-        const tree = await res.json();
-        if (!res.ok) throw new Error(tree.message);
-        await fetch(`http://localhost:3000/trees/${tree.tree_id}/join`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ user_id: user.id, tree_key: privateKey }),
+        const { data: tree } = await api.get(`/tree/by-key/${privateKey}`);
+        await api.post(`/trees/${tree.tree_id}/join`, {
+          user_id: user.id,
+          tree_key: privateKey,
         });
         navigate(`/tree/${tree.tree_id}`);
       } catch (err) {
+        console.error(err);
         alert("유효하지 않은 트리 키입니다.");
       }
     }

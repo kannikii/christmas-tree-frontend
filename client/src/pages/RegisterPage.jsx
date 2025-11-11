@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import '../components/PixelForm.css'
+import api from '../api/axios'
 
 function RegisterPage() {
   const [username, setUsername] = useState('')
@@ -13,23 +14,12 @@ function RegisterPage() {
     e.preventDefault()
 
     try {
-      const response = await fetch('http://localhost:3000/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, email, password }),
-      })
-
-      const data = await response.text()
-
-      if (response.ok) {
-        setMessage('✅ 회원가입 성공! 로그인 페이지로 이동합니다.')
-        // 1. 잠깐 메시지 보여준 후 1초 뒤 이동
-        setTimeout(() => navigate('/login'), 1000)
-      } else {
-        setMessage(`❌ ${data}`)
-      }
+      await api.post('/register', { username, email, password })
+      setMessage('✅ 회원가입 성공! 로그인 페이지로 이동합니다.')
+      setTimeout(() => navigate('/login'), 1000)
     } catch (error) {
-      setMessage('서버 오류 발생')
+      const serverMessage = error.response?.data?.message || error.response?.data || '서버 오류 발생'
+      setMessage(`❌ ${serverMessage}`)
       console.error(error)
     }
   }

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import './MyTreesPage.css'
+import api from '../api/axios'
 
 function MyTreesPage({ user }) {
   const [trees, setTrees] = useState([])
@@ -11,9 +12,9 @@ function MyTreesPage({ user }) {
   // ✅ 내 트리 목록 불러오기
   useEffect(() => {
     if (!user) return
-    fetch(`http://localhost:3000/users/${user.id}/trees`)
-      .then((res) => res.json())
-      .then((data) => setTrees(data))
+    api
+      .get(`/users/${user.id}/trees`)
+      .then(({ data }) => setTrees(Array.isArray(data) ? data : []))
       .catch((err) => console.error(err))
   }, [user])
 
@@ -22,24 +23,16 @@ function MyTreesPage({ user }) {
     if (!treeName.trim()) return alert('트리 이름을 입력하세요.')
 
     try {
-      const res = await fetch('http://localhost:3000/trees', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          owner_id: user.id,
-          tree_name: treeName,
-          tree_type: treeType,
-        }),
+      const { data: newTree } = await api.post('/trees', {
+        owner_id: user.id,
+        tree_name: treeName,
+        tree_type: treeType,
       })
 
-      const newTree = await res.json()
-      if (!res.ok) throw new Error(newTree.message || '트리 생성 실패')
-
       // ✅ 자동 참여 등록
-      await fetch(`http://localhost:3000/trees/${newTree.tree_id}/join`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ user_id: user.id, tree_key: newTree.tree_key }),
+      await api.post(`/trees/${newTree.tree_id}/join`, {
+        user_id: user.id,
+        tree_key: newTree.tree_key,
       })
 
       // ✅ 생성 후 리스트 갱신
@@ -60,7 +53,8 @@ function MyTreesPage({ user }) {
       }
     } catch (err) {
       console.error(err)
-      alert('트리 생성 중 오류가 발생했습니다.')
+      const message = err.response?.data?.message || '트리 생성 중 오류가 발생했습니다.'
+      alert(message)
     }
   }
 
