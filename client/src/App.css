@@ -1,0 +1,120 @@
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+@font-face {
+  font-family: 'NeoDunggeunmo';
+  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/NeoDunggeunmoPro-Regular.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Lanapixel';
+  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2506-1@1.0/LanaPixel.woff2') format('woff2');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+body {
+  font-family: 'Lanapixel', 'Press Start 2P', 'NeoDunggeunmo', cursive;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #fff;
+  text-align: center;
+  image-rendering: pixelated;
+  margin: 0;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* Header */
+header {
+  background-color: rgba(20, 20, 20, 0.85);
+  border-bottom: 3px solid #fff;
+  padding: 12px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+header h1 {
+  font-size: 18px;
+  color: #ffcc00;
+  text-shadow: 2px 2px 0px #000;
+  cursor: pointer;
+}
+
+nav {
+  display: flex;
+  gap: 10px;
+  font-size: 14px;
+}
+
+/* 버튼 */
+.pixel-button {
+  background-color: #c0392b;
+  border: 3px solid #fff;
+  color: #fff;
+  font-size: 14px;
+  padding: 12px 22px;
+  cursor: pointer;
+  box-shadow: 4px 4px 0px #222;
+  transition: all 0.1s ease-in-out;
+  font-family: 'Lanapixel', 'Press Start 2P', 'NeoDunggeunmo', cursive;
+  border-radius: 14px;
+}
+
+.pixel-button:hover {
+  box-shadow: 2px 2px 0px #000;
+  transform: translate(2px, 2px);
+}
+
+/* 메인 콘텐츠 */
+.main-content {
+  padding-top: 60px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.main-title {
+  color: #ffeb3b;
+  font-size: 36px;
+  text-shadow: 2px 2px 0px #000;
+  margin-top: 50px;
+  letter-spacing: 2px;
+}
+
+.subtitle {
+  color: #eee;
+  font-size: 20px;
+  margin-top: 12px;
+  text-shadow: 1px 1px 0px #000;
+}
+
+.private-key-wrapper {
+  margin-top: 20px;
+  display: inline-flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.private-key-input {
+  padding: 14px 18px;
+  border: 3px solid #fff;
+  border-radius: 16px;
+  font-family: 'Lanapixel', 'Press Start 2P', 'NeoDunggeunmo', cursive;
+  background: rgba(0, 0, 0, 0.7);
+  color: #fff;
+  min-width: 220px;
+  box-shadow: 4px 4px 0px #000;
+  text-align: center;
+}
+
+.private-key-input::placeholder {
+  color: rgba(255, 255, 255, 0.7);
+}
