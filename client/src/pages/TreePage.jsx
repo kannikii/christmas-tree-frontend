@@ -7,11 +7,37 @@ import noteImage from '../assets/note.png'
 import './TreePage.css'
 import api from '../api/axios'
 
+const BASE_TREE_WIDTH = 660
+const BASE_TREE_HEIGHT = 860
+const COORD_OFFSET = 1_000_000
+const COORD_SCALE = 10_000
+
+const clamp01 = (value) => Math.min(Math.max(value, 0), 1)
+
+const encodeCoordinate = (pixelValue, dimension) => {
+  if (!dimension || dimension <= 0) return 0
+  const ratio = clamp01(pixelValue / dimension)
+  return Math.round(ratio * COORD_SCALE) + COORD_OFFSET
+}
+
+const decodeCoordinate = (storedValue, dimension, axis) => {
+  if (storedValue == null || !dimension || dimension <= 0) return 0
+
+  let ratio
+  if (storedValue >= COORD_OFFSET) {
+    ratio = (storedValue - COORD_OFFSET) / COORD_SCALE
+  } else {
+    const base = axis === 'x' ? BASE_TREE_WIDTH : BASE_TREE_HEIGHT
+    ratio = base > 0 ? storedValue / base : 0
+  }
+  return clamp01(ratio) * dimension
+}
+
 function TreePage({ user }) {
   const [notes, setNotes] = useState([])
   const [showModal, setShowModal] = useState(false)
   const [newNote, setNewNote] = useState('')
-  const [clickPos, setClickPos] = useState({ x: 0, y: 0 })
+  const [clickPos, setClickPos] = useState({ x: 0, y: 0, encodedX: 0, encodedY: 0 })
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [activeNote, setActiveNote] = useState(null)
   const [noteLikes, setNoteLikes] = useState({})
@@ -21,6 +47,7 @@ function TreePage({ user }) {
   const [likedNotes, setLikedNotes] = useState({})
   const [hasAccess, setHasAccess] = useState(false)
   const [isCheckingAccess, setIsCheckingAccess] = useState(true)
+  const [treeSize, setTreeSize] = useState({ width: 0, height: 0 })
   const treeRef = useRef(null)
   const { id } = useParams()
   const treeId = id
@@ -112,6 +139,32 @@ function TreePage({ user }) {
     fetchNotes()
   }, [treeId, hasAccess])
 
+  useEffect(() => {
+    if (!hasAccess) return
+
+    const handleResize = () => {
+      if (!treeRef.current) return
+      const rect = treeRef.current.getBoundingClientRect()
+      setTreeSize({ width: rect.width, height: rect.height })
+    }
+
+    handleResize()
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [hasAccess])
+
+  const getRenderedPosition = useCallback(
+    (note) => {
+      const rawX = note.pos_x ?? note.x ?? 0
+      const rawY = note.pos_y ?? note.y ?? 0
+      return {
+        x: decodeCoordinate(rawX, treeSize.width, 'x'),
+        y: decodeCoordinate(rawY, treeSize.height, 'y'),
+      }
+    },
+    [treeSize.width, treeSize.height]
+  )
+
   const handleTreeClick = (e) => {
     if (!user) {
       alert('로그인이 필요합니다!')
@@ -132,7 +185,10 @@ function TreePage({ user }) {
 
     if (x < leftEdge || x > rightEdge) return
 
-    setClickPos({ x, y })
+    const encodedX = encodeCoordinate(x, rect.width)
+    const encodedY = encodeCoordinate(y, rect.height)
+
+    setClickPos({ x, y, encodedX, encodedY })
     setShowModal(true)
   }
 
@@ -144,14 +200,14 @@ function TreePage({ user }) {
       const { data } = await api.post(`/trees/${treeId}/notes`, {
         user_id: user.id,
         message: newNote,
-        pos_x: clickPos.x,
-        pos_y: clickPos.y,
+        pos_x: clickPos.encodedX,
+        pos_y: clickPos.encodedY,
       })
       const created = {
         note_id: data.note_id,
         message: newNote,
-        pos_x: clickPos.x,
-        pos_y: clickPos.y,
+        pos_x: clickPos.encodedX,
+        pos_y: clickPos.encodedY,
         author: user.username,
       }
       setNotes((prev) => [...prev, created])
@@ -160,6 +216,7 @@ function TreePage({ user }) {
       setNoteComments((prev) => ({ ...prev, [created.note_id]: [] }))
       setShowModal(false)
       setNewNote('')
+      setClickPos({ x: 0, y: 0, encodedX: 0, encodedY: 0 })
     } catch (error) {
       console.error(error)
       alert('노트 저장 중 문제가 발생했습니다.')
@@ -267,35 +324,39 @@ function TreePage({ user }) {
           }}
           onClick={handleTreeClick}
         >
-          {notes.map((note) => (
-            <div
-              key={note.note_id || `${note.pos_x}-${note.pos_y}`}
-              className="tree-note-wrapper"
-              style={{
-                position: 'absolute',
-                top: (note.pos_y ?? note.y) - 28,
-                left: (note.pos_x ?? note.x) - 24,
-              }}
-              onClick={(e) => {
-                e.stopPropagation()
-                setActiveNote(note)
-                setNewComment('')
-              }}
-            >
-              <img
-                src={noteImage}
-                alt="tree note"
-                className="tree-note"
-                style={{
-                  width: '64px',
-                  height: '64px',
-                }}
-              />
-              <span className="tree-note-like-count">
-                ❤️ {noteLikes[note.note_id] ?? 0}
-              </span>
-            </div>
-          ))}
+          {treeSize.width > 0 &&
+            notes.map((note) => {
+              const { x, y } = getRenderedPosition(note)
+              return (
+                <div
+                  key={note.note_id || `${note.pos_x}-${note.pos_y}`}
+                  className="tree-note-wrapper"
+                  style={{
+                    position: 'absolute',
+                    top: y - 28,
+                    left: x - 24,
+                  }}
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    setActiveNote(note)
+                    setNewComment('')
+                  }}
+                >
+                  <img
+                    src={noteImage}
+                    alt="tree note"
+                    className="tree-note"
+                    style={{
+                      width: '64px',
+                      height: '64px',
+                    }}
+                  />
+                  <span className="tree-note-like-count">
+                    ❤️ {noteLikes[note.note_id] ?? 0}
+                  </span>
+                </div>
+              )
+            })}
         </div>
       </div>
 
