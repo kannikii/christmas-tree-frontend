@@ -40,6 +40,10 @@ function TreePage({ user }) {
   const [clickPos, setClickPos] = useState({ x: 0, y: 0, encodedX: 0, encodedY: 0 })
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [activeNote, setActiveNote] = useState(null)
+  const [isEditingNote, setIsEditingNote] = useState(false)
+  const [editMessage, setEditMessage] = useState('')
+  const [isUpdatingNote, setIsUpdatingNote] = useState(false)
+  const [isDeletingNote, setIsDeletingNote] = useState(false)
   const [noteLikes, setNoteLikes] = useState({})
   const [noteComments, setNoteComments] = useState({})
   const [newComment, setNewComment] = useState('')
@@ -209,6 +213,7 @@ function TreePage({ user }) {
         pos_x: clickPos.encodedX,
         pos_y: clickPos.encodedY,
         author: user.username,
+        user_id: user.id,
       }
       setNotes((prev) => [...prev, created])
       setNoteLikes((prev) => ({ ...prev, [created.note_id]: 0 }))
@@ -280,12 +285,76 @@ function TreePage({ user }) {
     }
   }
 
+  const handleStartEditNote = () => {
+    if (!activeNote) return
+    setIsEditingNote(true)
+    setEditMessage(activeNote.message || '')
+  }
+
+  const handleCancelEditNote = () => {
+    setIsEditingNote(false)
+    setEditMessage(activeNote?.message || '')
+  }
+
+  const handleSaveNoteEdit = async () => {
+    if (!activeNote?.note_id || !user) return
+    const trimmed = editMessage.trim()
+    if (!trimmed) {
+      alert('메모 내용을 입력하세요.')
+      return
+    }
+    if (isUpdatingNote) return
+    try {
+      setIsUpdatingNote(true)
+      await api.put(`/trees/${treeId}/notes/${activeNote.note_id}`, {
+        user_id: user.id,
+        message: trimmed,
+      })
+      setNotes((prev) =>
+        prev.map((note) =>
+          note.note_id === activeNote.note_id ? { ...note, message: trimmed } : note
+        )
+      )
+      setActiveNote((prev) => (prev ? { ...prev, message: trimmed } : prev))
+      setIsEditingNote(false)
+    } catch (error) {
+      console.error(error)
+      alert('메모 수정 중 문제가 발생했습니다.')
+    } finally {
+      setIsUpdatingNote(false)
+    }
+  }
+
+  const handleDeleteNote = async () => {
+    if (!activeNote?.note_id || !user) return
+    if (isDeletingNote) return
+    const confirmed = window.confirm('이 메모를 삭제하시겠습니까?')
+    if (!confirmed) return
+    try {
+      setIsDeletingNote(true)
+      await api.delete(`/trees/${treeId}/notes/${activeNote.note_id}`, {
+        data: { user_id: user.id },
+      })
+      setNotes((prev) => prev.filter((note) => note.note_id !== activeNote.note_id))
+      setActiveNote(null)
+      setIsEditingNote(false)
+      setEditMessage('')
+    } catch (error) {
+      console.error(error)
+      alert('메모 삭제 중 문제가 발생했습니다.')
+    } finally {
+      setIsDeletingNote(false)
+    }
+  }
+
   const activeNoteId = activeNote?.note_id
   const currentComments = activeNoteId ? noteComments[activeNoteId] : null
   useEffect(() => {
     if (!activeNoteId) return
     loadComments(activeNoteId)
   }, [activeNoteId, loadComments])
+  const isNoteOwner =
+    Boolean(user && activeNote && Number(user.id) === Number(activeNote.user_id))
 
   if (isCheckingAccess) {
     return (
@@ -340,6 +409,8 @@ function TreePage({ user }) {
                     e.stopPropagation()
                     setActiveNote(note)
                     setNewComment('')
+                    setIsEditingNote(false)
+                    setEditMessage(note.message || '')
                   }}
                 >
                   <img
@@ -391,14 +462,31 @@ function TreePage({ user }) {
       {activeNote && (
         <div className="note-detail-overlay">
           <div className="note-detail-panel">
-            <button className="note-detail-close" onClick={() => setActiveNote(null)}>
+            <button
+              className="note-detail-close"
+              onClick={() => {
+                setActiveNote(null)
+                setIsEditingNote(false)
+                setEditMessage('')
+              }}
+            >
               ✖
             </button>
             <div className="note-detail-header">
               <h3>장식 메모</h3>
               <span className="note-detail-author">{activeNote.author || '익명'}</span>
             </div>
-            <p className="note-detail-message">{activeNote.message}</p>
+            {isEditingNote ? (
+              <textarea
+                className="note-detail-editor"
+                rows={4}
+                maxLength={120}
+                value={editMessage}
+                onChange={(e) => setEditMessage(e.target.value)}
+              />
+            ) : (
+              <p className="note-detail-message">{activeNote.message}</p>
+            )}
 
             <div className="note-detail-actions">
               <button
@@ -411,6 +499,48 @@ function TreePage({ user }) {
                 {noteLikes[activeNote.note_id] ?? 0})
               </button>
             </div>
+            {isNoteOwner && (
+              <div className="note-owner-actions">
+                {isEditingNote ? (
+                  <>
+                    <button
+                      className="pixel-button secondary"
+                      type="button"
+                      onClick={handleCancelEditNote}
+                      disabled={isUpdatingNote}
+                    >
+                      취소
+                    </button>
+                    <button
+                      className="pixel-button primary"
+                      type="button"
+                      onClick={handleSaveNoteEdit}
+                      disabled={isUpdatingNote}
+                    >
+                      {isUpdatingNote ? '수정 중...' : '수정 완료'}
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <button
+                      className="pixel-button secondary"
+                      type="button"
+                      onClick={handleStartEditNote}
+                    >
+                      ✏️ 수정
+                    </button>
+                    <button
+                      className="pixel-button danger"
+                      type="button"
+                      onClick={handleDeleteNote}
+                      disabled={isDeletingNote}
+                    >
+                      {isDeletingNote ? '삭제 중...' : '🗑 삭제'}
+                    </button>
+                  </>
+                )}
+              </div>
+            )}
 
             <div className="note-comment-section">
               <h4>댓글</h4>
