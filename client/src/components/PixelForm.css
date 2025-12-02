@@ -23,7 +23,6 @@
   width: 420px;
   border-radius: 0;
   text-align: center;
-  animation: box-glow 3s infinite alternate;
   border-radius: 20px;
 }
 
@@ -135,17 +134,6 @@
 
 .pixel-link:hover {
   color: #00ffff;
-}
-
-@keyframes box-glow {
-  from {
-    border-color: #ffcc00;
-    box-shadow: 4px 4px 0px #000;
-  }
-  to {
-    border-color: #fff;
-    box-shadow: 8px 8px 0px #000;
-  }
 }
 
 /* 반응형 */
