@@ -224,7 +224,7 @@ function TreePage({ user }) {
       setClickPos({ x: 0, y: 0, encodedX: 0, encodedY: 0 })
     } catch (error) {
       console.error(error)
-      alert('노트 저장 중 문제가 발생했습니다.')
+      alert(error.response?.data || '노트 저장 중 문제가 발생했습니다.')
     } finally {
       setIsSubmitting(false)
     }
@@ -254,7 +254,7 @@ function TreePage({ user }) {
       setLikedNotes((prev) => ({ ...prev, [noteId]: !alreadyLiked }))
     } catch (error) {
       console.error(error)
-      alert('좋아요 처리 중 문제가 발생했습니다.')
+      alert(error.response?.data || '좋아요 처리 중 문제가 발생했습니다.')
     }
   }
 
@@ -279,7 +279,7 @@ function TreePage({ user }) {
       await loadComments(noteId)
     } catch (error) {
       console.error(error)
-      alert('댓글 등록 중 문제가 발생했습니다.')
+      alert(error.response?.data || '댓글 등록 중 문제가 발생했습니다.')
     } finally {
       setIsCommentSubmitting(false)
     }
@@ -319,7 +319,7 @@ function TreePage({ user }) {
       setIsEditingNote(false)
     } catch (error) {
       console.error(error)
-      alert('메모 수정 중 문제가 발생했습니다.')
+      alert(error.response?.data || '메모 수정 중 문제가 발생했습니다.')
     } finally {
       setIsUpdatingNote(false)
     }
@@ -341,7 +341,7 @@ function TreePage({ user }) {
       setEditMessage('')
     } catch (error) {
       console.error(error)
-      alert('메모 삭제 중 문제가 발생했습니다.')
+      alert(error.response?.data || '메모 삭제 중 문제가 발생했습니다.')
     } finally {
       setIsDeletingNote(false)
     }
@@ -490,9 +490,8 @@ function TreePage({ user }) {
 
             <div className="note-detail-actions">
               <button
-                className={`pixel-button note-like-toggle ${
-                  likedNotes[activeNote.note_id] ? 'liked' : ''
-                }`}
+                className={`pixel-button note-like-toggle ${likedNotes[activeNote.note_id] ? 'liked' : ''
+                  }`}
                 onClick={() => handleToggleLike(activeNote.note_id)}
               >
                 {likedNotes[activeNote.note_id] ? '💔 좋아요 취소' : '❤️ 좋아요'} (
