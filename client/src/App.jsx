@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 import Snowfall from "react-snowfall";
-import pixelBg from "./assets/pixel-bg.jpg";
 import "./App.css";
 
 import Header from "./components/Header";
@@ -33,7 +32,7 @@ function App() {
   return (
     <div
       style={{
-        backgroundImage: `url(${pixelBg})`,
+        backgroundImage: "url(/pixel-bg.png)",
         backgroundRepeat: "no-repeat",
         backgroundPosition: "center center",
         backgroundSize: "cover",
