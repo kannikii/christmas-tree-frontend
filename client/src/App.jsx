@@ -10,6 +10,7 @@ import RegisterPage from "./pages/RegisterPage";
 import MyTreesPage from "./pages/MyTreesPage"; 
 import TreePage from "./pages/TreePage";
 import OAuthSuccess from "./pages/OAuthSuccess";
+import AdminDashboard from "./pages/AdminDashboard";
 
 function App() {
   const [user, setUser] = useState(() => {
@@ -28,6 +29,8 @@ function App() {
     localStorage.removeItem("user");
     alert("로그아웃 되었습니다.");
   };
+
+  const isAdmin = Boolean(user && (Number(user.id) === 4 || user.is_admin === 1));
 
   return (
     <div
@@ -48,6 +51,7 @@ function App() {
         <Route path="/oauth-success" element={<OAuthSuccess setUser={setUser} />} />
         <Route path="/mytrees" element={<MyTreesPage user={user} />} />
         <Route path="/tree/:id" element={<TreePage user={user} />} />
+        <Route path="/admin" element={isAdmin ? <AdminDashboard user={user} /> : <Navigate to="/" />} />
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
     </div>
