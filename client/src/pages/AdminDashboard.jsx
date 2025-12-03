@@ -19,7 +19,7 @@ export default function AdminDashboard({ user }) {
         <p className="eyebrow">ADMIN CONSOLE</p>
         <h2>🎄 niki kan 관리자님, 트리를 정리해볼까요?</h2>
         <p className="lede">
-          노트/댓글 숨김, 삭제·복구, 사용자 차단까지 한 곳에서 관리하세요. (기능 연동은 추후 백엔드와 연결 예정)
+          노트/댓글 숨김, 삭제, 사용자 차단까지 한 곳에서 관리하세요. (기능 연동은 추후 백엔드와 연결 예정)
         </p>
       </div>
 
@@ -29,10 +29,10 @@ export default function AdminDashboard({ user }) {
             <h3>노트 관리</h3>
             <span className="tag warn">콘텐츠</span>
           </div>
-          <p className="card-copy">노트를 숨기거나 다시 보이게 하고, 필요하면 삭제/복구까지 처리합니다.</p>
+          <p className="card-copy">노트를 숨기거나 다시 보이게 하고, 필요하면 삭제까지 처리합니다.</p>
           <div className="card-actions">
             <PixelButton text="숨김 / 표시" onClick={() => alert("백엔드 연동 후 동작 예정")} />
-            <PixelButton text="삭제 / 복구" onClick={() => alert("백엔드 연동 후 동작 예정")} />
+            <PixelButton text="삭제" onClick={() => alert("백엔드 연동 후 동작 예정")} />
           </div>
         </section>
 
@@ -41,10 +41,10 @@ export default function AdminDashboard({ user }) {
             <h3>댓글 관리</h3>
             <span className="tag info">토론</span>
           </div>
-          <p className="card-copy">댓글을 숨기거나 복원하고, 스팸성 댓글을 빠르게 정리하세요.</p>
+          <p className="card-copy">댓글을 숨기거나 다시 보이게 하고, 스팸성 댓글을 빠르게 삭제하세요.</p>
           <div className="card-actions">
             <PixelButton text="숨김 / 표시" onClick={() => alert("백엔드 연동 후 동작 예정")} />
-            <PixelButton text="삭제 / 복구" onClick={() => alert("백엔드 연동 후 동작 예정")} />
+            <PixelButton text="삭제" onClick={() => alert("백엔드 연동 후 동작 예정")} />
           </div>
         </section>
 
