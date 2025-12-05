@@ -14,6 +14,7 @@ import AdminDashboard from "./pages/AdminDashboard";
 import AdminUsers from "./pages/AdminUsers";
 import AdminNotes from "./pages/AdminNotes";
 import AdminComments from "./pages/AdminComments";
+import AdminLogs from "./pages/AdminLogs";
 
 function App() {
   const [user, setUser] = useState(() => {
@@ -58,6 +59,7 @@ function App() {
         <Route path="/admin/users" element={isAdmin ? <AdminUsers user={user} /> : <Navigate to="/" />} />
         <Route path="/admin/notes" element={isAdmin ? <AdminNotes user={user} /> : <Navigate to="/" />} />
         <Route path="/admin/comments" element={isAdmin ? <AdminComments user={user} /> : <Navigate to="/" />} />
+        <Route path="/admin/logs" element={isAdmin ? <AdminLogs user={user} /> : <Navigate to="/" />} />
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
     </div>

@@ -57,9 +57,7 @@ export default function AdminDashboard({ user }) {
             <span className="tag neutral">기록</span>
           </div>
           <p className="card-copy">admin_log를 조회해 누가 언제 어떤 조치를 했는지 확인합니다.</p>
-          <div className="card-actions">
-            <PixelButton text="로그 보기" onClick={() => alert("백엔드 연동 후 동작 예정")} />
-          </div>
+          <PixelButton text="로그 보기" onClick={() => navigate('/admin/logs')} />
         </section>
       </div>
     </div>
