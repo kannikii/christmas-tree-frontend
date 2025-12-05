@@ -5,7 +5,7 @@ import "./Header.css";
 
 export default function Header({ user, onLogout }) {
   const navigate = useNavigate();
-  const isAdmin = Boolean(user && (Number(user.id) === 4 || user.is_admin === 1));
+  const isAdmin = Boolean(user && Number(user.is_admin) === 1);
 
   return (
     <header>

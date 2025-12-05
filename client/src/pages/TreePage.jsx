@@ -94,20 +94,28 @@ function TreePage({ user }) {
   const loadComments = useCallback(async (noteId) => {
     if (!noteId) return
     try {
-      const { data } = await api.get(`/notes/${noteId}/comments`)
+      const params = {}
+      if (user && Number(user.is_admin) === 1) {
+        params.admin_user_id = user.id
+      }
+      const { data } = await api.get(`/notes/${noteId}/comments`, { params })
       const comments = Array.isArray(data) ? data : []
       setNoteComments((prev) => ({ ...prev, [noteId]: comments }))
     } catch (error) {
       console.error(`노트 ${noteId} 댓글 조회 실패:`, error)
     }
-  }, [])
+  }, [user])
 
   useEffect(() => {
     if (!treeId || !hasAccess) return
 
     const fetchNotes = async () => {
       try {
-        const { data } = await api.get(`/trees/${treeId}/notes`)
+        const params = {}
+        if (user && Number(user.is_admin) === 1) {
+          params.admin_user_id = user.id
+        }
+        const { data } = await api.get(`/trees/${treeId}/notes`, { params })
 
         if (!Array.isArray(data)) return
         setNotes(data)
@@ -141,7 +149,7 @@ function TreePage({ user }) {
     }
 
     fetchNotes()
-  }, [treeId, hasAccess])
+  }, [treeId, hasAccess, user])
 
   useEffect(() => {
     if (!hasAccess) return
@@ -349,12 +357,13 @@ function TreePage({ user }) {
 
   const activeNoteId = activeNote?.note_id
   const currentComments = activeNoteId ? noteComments[activeNoteId] : null
+  const isAdmin = Boolean(user && Number(user.is_admin) === 1)
   useEffect(() => {
     if (!activeNoteId) return
     loadComments(activeNoteId)
   }, [activeNoteId, loadComments])
-  const isNoteOwner =
-    Boolean(user && activeNote && Number(user.id) === Number(activeNote.user_id))
+  const isNoteOwnerOrAdmin =
+    Boolean(isAdmin || (user && activeNote && Number(user.id) === Number(activeNote.user_id)))
 
   if (isCheckingAccess) {
     return (
@@ -474,6 +483,9 @@ function TreePage({ user }) {
             </button>
             <div className="note-detail-header">
               <h3>장식 메모</h3>
+              {isAdmin && activeNote?.is_hidden === 1 && (
+                <span className="note-hidden-badge">숨김 상태</span>
+              )}
               <span className="note-detail-author">{activeNote.author || '익명'}</span>
             </div>
             {isEditingNote ? (
@@ -498,7 +510,7 @@ function TreePage({ user }) {
                 {noteLikes[activeNote.note_id] ?? 0})
               </button>
             </div>
-            {isNoteOwner && (
+            {isNoteOwnerOrAdmin && (
               <div className="note-owner-actions">
                 {isEditingNote ? (
                   <>

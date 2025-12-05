@@ -5,7 +5,7 @@ import PixelButton from "../components/PixelButton";
 
 export default function AdminDashboard({ user }) {
   const navigate = useNavigate();
-  const isAdmin = Boolean(user && (Number(user.id) === 4 || user.is_admin === 1));
+  const isAdmin = Boolean(user && Number(user.is_admin) === 1);
 
   if (!isAdmin) {
     // 프론트 단에서 가드 (서버에서도 한 번 더 검증 필요)
@@ -29,11 +29,8 @@ export default function AdminDashboard({ user }) {
             <h3>노트 관리</h3>
             <span className="tag warn">콘텐츠</span>
           </div>
-          <p className="card-copy">노트를 숨기거나 다시 보이게 하고, 필요하면 삭제까지 처리합니다.</p>
-          <div className="card-actions">
-            <PixelButton text="숨김 / 표시" onClick={() => alert("백엔드 연동 후 동작 예정")} />
-            <PixelButton text="삭제" onClick={() => alert("백엔드 연동 후 동작 예정")} />
-          </div>
+          <p className="card-copy">노트 목록을 보고 숨김/표시/삭제를 관리합니다.</p>
+          <PixelButton text="노트 관리 페이지" onClick={() => navigate('/admin/notes')} />
         </section>
 
         <section className="admin-card">
@@ -41,11 +38,8 @@ export default function AdminDashboard({ user }) {
             <h3>댓글 관리</h3>
             <span className="tag info">토론</span>
           </div>
-          <p className="card-copy">댓글을 숨기거나 다시 보이게 하고, 스팸성 댓글을 빠르게 삭제하세요.</p>
-          <div className="card-actions">
-            <PixelButton text="숨김 / 표시" onClick={() => alert("백엔드 연동 후 동작 예정")} />
-            <PixelButton text="삭제" onClick={() => alert("백엔드 연동 후 동작 예정")} />
-          </div>
+          <p className="card-copy">댓글 목록을 보고 숨김/표시/삭제를 관리합니다.</p>
+          <PixelButton text="댓글 관리 페이지" onClick={() => navigate('/admin/comments')} />
         </section>
 
         <section className="admin-card">
@@ -53,10 +47,8 @@ export default function AdminDashboard({ user }) {
             <h3>사용자 제재</h3>
             <span className="tag danger">안전</span>
           </div>
-          <p className="card-copy">문제 행동이 있는 사용자를 차단/해제하고, 트리 접근을 제어합니다.</p>
-          <div className="card-actions">
-            <PixelButton text="차단 / 해제" onClick={() => alert("백엔드 연동 후 동작 예정")} />
-          </div>
+          <p className="card-copy">사용자 목록을 보고 차단/해제를 관리합니다.</p>
+          <PixelButton text="사용자 관리 페이지" onClick={() => navigate('/admin/users')} />
         </section>
 
         <section className="admin-card">

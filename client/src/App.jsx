@@ -11,6 +11,9 @@ import MyTreesPage from "./pages/MyTreesPage";
 import TreePage from "./pages/TreePage";
 import OAuthSuccess from "./pages/OAuthSuccess";
 import AdminDashboard from "./pages/AdminDashboard";
+import AdminUsers from "./pages/AdminUsers";
+import AdminNotes from "./pages/AdminNotes";
+import AdminComments from "./pages/AdminComments";
 
 function App() {
   const [user, setUser] = useState(() => {
@@ -30,7 +33,7 @@ function App() {
     alert("로그아웃 되었습니다.");
   };
 
-  const isAdmin = Boolean(user && (Number(user.id) === 4 || user.is_admin === 1));
+  const isAdmin = Boolean(user && Number(user.is_admin) === 1);
 
   return (
     <div
@@ -52,6 +55,9 @@ function App() {
         <Route path="/mytrees" element={<MyTreesPage user={user} />} />
         <Route path="/tree/:id" element={<TreePage user={user} />} />
         <Route path="/admin" element={isAdmin ? <AdminDashboard user={user} /> : <Navigate to="/" />} />
+        <Route path="/admin/users" element={isAdmin ? <AdminUsers user={user} /> : <Navigate to="/" />} />
+        <Route path="/admin/notes" element={isAdmin ? <AdminNotes user={user} /> : <Navigate to="/" />} />
+        <Route path="/admin/comments" element={isAdmin ? <AdminComments user={user} /> : <Navigate to="/" />} />
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
     </div>
