@@ -61,7 +61,7 @@ export default function AdminUsers({ user }) {
       {status && <div className="admin-status">{status}</div>}
 
       <div className="admin-list">
-        <div className="admin-list-header">
+        <div className="admin-list-header users-header">
           <span>ID</span>
           <span>이름</span>
           <span>이메일</span>
@@ -70,20 +70,17 @@ export default function AdminUsers({ user }) {
           <span>액션</span>
         </div>
         {users.map((u) => (
-          <div className="admin-list-row" key={u.user_id}>
+          <div className="admin-list-row users-row" key={u.user_id}>
             <span>{u.user_id}</span>
             <span>{u.username}</span>
             <span className="ellipsis">{u.email}</span>
             <span>{u.is_admin ? "관리자" : "일반"}</span>
             <span>{u.is_blocked ? "차단됨" : "정상"}</span>
-            <div className="row-actions">
+            <div className="row-actions compact">
               <PixelButton text="노트" onClick={() => navigate(`/admin/notes?user=${u.user_id}`)} />
               <PixelButton text="댓글" onClick={() => navigate(`/admin/comments?user=${u.user_id}`)} />
-              {u.is_blocked ? (
-                <PixelButton text="해제" onClick={() => runUserAction(u.user_id, "unblock")} />
-              ) : (
-                <PixelButton text="차단" onClick={() => runUserAction(u.user_id, "block")} />
-              )}
+              <PixelButton text="차단" onClick={() => runUserAction(u.user_id, "block")} />
+              <PixelButton text="해제" onClick={() => runUserAction(u.user_id, "unblock")} />
             </div>
           </div>
         ))}

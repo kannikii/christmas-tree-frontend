@@ -20,6 +20,7 @@
   border-radius: 16px;
   box-shadow: 6px 6px 0 #111;
   overflow: hidden;
+  background: rgba(0, 0, 0, 0.65);
 }
 
 .admin-list-header,
@@ -50,6 +51,29 @@
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
+}
+
+.row-actions.compact .pixel-button {
+  padding: 6px 10px;
+  min-width: 64px;
+  font-size: 12px;
+}
+
+.users-header,
+.users-row {
+  grid-template-columns: 60px 1fr 2fr 80px 90px 260px;
+}
+
+@media (max-width: 900px) {
+  .admin-list-header,
+  .admin-list-row {
+    grid-template-columns: 60px 1fr 2fr 80px 180px;
+    font-size: 12px;
+  }
+  .users-header,
+  .users-row {
+    grid-template-columns: 50px 1fr 2fr 70px 80px 220px;
+  }
 }
 
 @media (max-width: 900px) {
