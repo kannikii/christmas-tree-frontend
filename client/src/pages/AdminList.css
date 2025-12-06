@@ -49,19 +49,19 @@
 
 .row-actions {
   display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
+  flex-wrap: nowrap;
+  gap: 4px;
 }
 
 .row-actions.compact .pixel-button {
-  padding: 6px 10px;
-  min-width: 64px;
+  padding: 6px 9px;
+  min-width: 58px;
   font-size: 12px;
 }
 
 .users-header,
 .users-row {
-  grid-template-columns: 60px 1fr 2fr 80px 90px 260px;
+  grid-template-columns: 60px 1fr 2fr 80px 90px 240px;
 }
 
 @media (max-width: 900px) {

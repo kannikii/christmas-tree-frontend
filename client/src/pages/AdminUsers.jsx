@@ -77,10 +77,10 @@ export default function AdminUsers({ user }) {
             <span>{u.is_admin ? "관리자" : "일반"}</span>
             <span>{u.is_blocked ? "차단됨" : "정상"}</span>
             <div className="row-actions compact">
-              <PixelButton text="노트" onClick={() => navigate(`/admin/notes?user=${u.user_id}`)} />
-              <PixelButton text="댓글" onClick={() => navigate(`/admin/comments?user=${u.user_id}`)} />
-              <PixelButton text="차단" onClick={() => runUserAction(u.user_id, "block")} />
-              <PixelButton text="해제" onClick={() => runUserAction(u.user_id, "unblock")} />
+              <PixelButton className="compact" text="노트" onClick={() => navigate(`/admin/notes?user=${u.user_id}`)} />
+              <PixelButton className="compact" text="댓글" onClick={() => navigate(`/admin/comments?user=${u.user_id}`)} />
+              <PixelButton className="compact" text="차단" onClick={() => runUserAction(u.user_id, "block")} />
+              <PixelButton className="compact green" text="해제" onClick={() => runUserAction(u.user_id, "unblock")} />
             </div>
           </div>
         ))}

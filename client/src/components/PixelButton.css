@@ -15,3 +15,14 @@
   box-shadow: 2px 2px 0px #000;
   transform: translate(2px, 2px);
 }
+
+.pixel-button.compact {
+  padding: 6px 10px;
+  min-width: 64px;
+  font-size: 12px;
+}
+
+.pixel-button.green {
+  background-color: #0b8a2a;
+  box-shadow: 4px 4px 0px #18471c;
+}
