@@ -26,9 +26,9 @@
 .admin-list-header,
 .admin-list-row {
   display: grid;
-  grid-template-columns: 70px 1fr 2fr 90px 220px;
-  gap: 8px;
-  padding: 8px 10px;
+  grid-template-columns: 120px 80px 140px 120px 120px 120px;
+  gap: 6px;
+  padding: 8px;
   align-items: center;
 }
 
@@ -74,7 +74,7 @@
 
 .logs-header,
 .logs-row {
-  grid-template-columns: 150px 70px 140px 100px 100px 100px;
+  grid-template-columns: 150px 70px 120px 90px 90px 90px;
   font-size: 12px;
 }
 
