@@ -3,10 +3,11 @@ import { useNavigate } from "react-router-dom";
 import PixelButton from "../components/PixelButton";
 import api from "../api/axios";
 import "./AdminList.css";
+import { isAdminUser } from "../utils/auth";
 
 export default function AdminUsers({ user }) {
   const navigate = useNavigate();
-  const isAdmin = Boolean(user && Number(user.is_admin) === 1);
+  const isAdmin = isAdminUser(user);
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState("");
@@ -90,4 +91,3 @@ export default function AdminUsers({ user }) {
     </div>
   );
 }
-

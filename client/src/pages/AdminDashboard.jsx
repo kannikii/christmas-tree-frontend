@@ -2,10 +2,11 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import "./AdminDashboard.css";
 import PixelButton from "../components/PixelButton";
+import { isAdminUser } from "../utils/auth";
 
 export default function AdminDashboard({ user }) {
   const navigate = useNavigate();
-  const isAdmin = Boolean(user && Number(user.is_admin) === 1);
+  const isAdmin = isAdminUser(user);
 
   if (!isAdmin) {
     // 프론트 단에서 가드 (서버에서도 한 번 더 검증 필요)

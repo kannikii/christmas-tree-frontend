@@ -3,12 +3,13 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import PixelButton from "../components/PixelButton";
 import api from "../api/axios";
 import "./AdminList.css";
+import { isAdminUser } from "../utils/auth";
 
 export default function AdminNotes({ user }) {
   const navigate = useNavigate();
   const [params] = useSearchParams();
   const preselectedUser = params.get("user");
-  const isAdmin = Boolean(user && Number(user.is_admin) === 1);
+  const isAdmin = isAdminUser(user);
   const [users, setUsers] = useState([]);
   const [selectedUser, setSelectedUser] = useState(preselectedUser || "");
   const [notes, setNotes] = useState([]);
@@ -128,4 +129,3 @@ export default function AdminNotes({ user }) {
     </div>
   );
 }
-

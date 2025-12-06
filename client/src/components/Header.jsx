@@ -2,10 +2,11 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import PixelButton from "./PixelButton";
 import "./Header.css";
+import { isAdminUser } from "../utils/auth";
 
 export default function Header({ user, onLogout }) {
   const navigate = useNavigate();
-  const isAdmin = Boolean(user && Number(user.is_admin) === 1);
+  const isAdmin = isAdminUser(user);
 
   return (
     <header>

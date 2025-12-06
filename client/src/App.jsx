@@ -15,6 +15,7 @@ import AdminUsers from "./pages/AdminUsers";
 import AdminNotes from "./pages/AdminNotes";
 import AdminComments from "./pages/AdminComments";
 import AdminLogs from "./pages/AdminLogs";
+import { isAdminUser } from "./utils/auth";
 
 function App() {
   const [user, setUser] = useState(() => {
@@ -34,7 +35,7 @@ function App() {
     alert("로그아웃 되었습니다.");
   };
 
-  const isAdmin = Boolean(user && Number(user.is_admin) === 1);
+  const isAdmin = isAdminUser(user);
 
   return (
     <div
