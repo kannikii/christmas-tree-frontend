@@ -115,13 +115,13 @@ export default function AdminNotes({ user }) {
             <span>{n.tree_name || n.tree_id}</span>
             <span className="ellipsis">{n.message}</span>
             <span>{n.is_hidden ? "숨김" : "표시"}</span>
-            <div className="row-actions">
+            <div className="row-actions compact">
               {n.is_hidden ? (
-                <PixelButton text="표시" onClick={() => runNoteAction(n.note_id, "show")} />
+                <PixelButton className="compact" text="표시" onClick={() => runNoteAction(n.note_id, "show")} />
               ) : (
-                <PixelButton text="숨김" onClick={() => runNoteAction(n.note_id, "hide")} />
+                <PixelButton className="compact" text="숨김" onClick={() => runNoteAction(n.note_id, "hide")} />
               )}
-              <PixelButton text="삭제" onClick={() => runNoteAction(n.note_id, "delete")} />
+              <PixelButton className="compact" text="삭제" onClick={() => runNoteAction(n.note_id, "delete")} />
             </div>
           </div>
         ))}

@@ -117,13 +117,13 @@ export default function AdminComments({ user }) {
             <span>{c.note_id}</span>
             <span className="ellipsis">{c.content}</span>
             <span>{c.is_hidden ? "숨김" : "표시"}</span>
-            <div className="row-actions">
+            <div className="row-actions compact">
               {c.is_hidden ? (
-                <PixelButton text="표시" onClick={() => runCommentAction(c.comment_id, "show")} />
+                <PixelButton className="compact" text="표시" onClick={() => runCommentAction(c.comment_id, "show")} />
               ) : (
-                <PixelButton text="숨김" onClick={() => runCommentAction(c.comment_id, "hide")} />
+                <PixelButton className="compact" text="숨김" onClick={() => runCommentAction(c.comment_id, "hide")} />
               )}
-              <PixelButton text="삭제" onClick={() => runCommentAction(c.comment_id, "delete")} />
+              <PixelButton className="compact" text="삭제" onClick={() => runCommentAction(c.comment_id, "delete")} />
             </div>
           </div>
         ))}
