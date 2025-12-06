@@ -27,14 +27,16 @@
 .admin-list-row {
   display: grid;
   grid-template-columns: 70px 1fr 2fr 90px 220px;
-  gap: 12px;
-  padding: 12px;
+  gap: 8px;
+  padding: 8px 10px;
   align-items: center;
 }
 
 .admin-list-header {
   background: rgba(255, 255, 255, 0.08);
   font-weight: bold;
+  font-size: 13px;
+  letter-spacing: 0.5px;
 }
 
 .admin-list-row:nth-child(odd) {
@@ -54,14 +56,30 @@
 }
 
 .row-actions.compact .pixel-button {
-  padding: 6px 9px;
-  min-width: 58px;
+  padding: 6px 8px;
+  min-width: 56px;
   font-size: 12px;
+}
+
+.label-strong {
+  font-weight: 700;
+  color: #ffeb3b;
+  text-shadow: 1px 1px 0 #000;
 }
 
 .users-header,
 .users-row {
   grid-template-columns: 60px 1fr 2fr 80px 90px 240px;
+}
+
+.logs-header,
+.logs-row {
+  grid-template-columns: 150px 70px 140px 100px 100px 100px;
+  font-size: 12px;
+}
+
+.logs-header {
+  font-size: 13px;
 }
 
 @media (max-width: 900px) {

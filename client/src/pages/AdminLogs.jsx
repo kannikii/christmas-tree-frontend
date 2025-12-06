@@ -47,7 +47,7 @@ export default function AdminLogs({ user }) {
       {status && <div className="admin-status">{status}</div>}
 
       <div className="admin-list">
-        <div className="admin-list-header">
+        <div className="admin-list-header logs-header">
           <span>시간</span>
           <span>관리자</span>
           <span>액션</span>
@@ -56,10 +56,10 @@ export default function AdminLogs({ user }) {
           <span>엔티티ID</span>
         </div>
         {logs.map((log, idx) => (
-          <div className="admin-list-row" key={`${log.actiontime}-${idx}`}>
+          <div className="admin-list-row logs-row" key={`${log.actiontime}-${idx}`}>
             <span>{new Date(log.actiontime).toLocaleString()}</span>
             <span>{log.admin_id}</span>
-            <span>{log.action}</span>
+            <span className="label-strong">{log.action}</span>
             <span>{log.target_note}</span>
             <span>{log.user_id}</span>
             <span>{log.note_id}</span>
